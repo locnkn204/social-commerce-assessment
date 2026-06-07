@@ -479,6 +479,76 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+
+    /* ===== Print / PDF styles ===== */
+    @media print {
+      @page {
+        margin: 16mm 12mm;
+        size: A4;
+      }
+
+      body {
+        background: white !important;
+        padding: 0;
+        min-height: auto;
+      }
+
+      .container {
+        box-shadow: none !important;
+        max-width: 100%;
+        padding: 0;
+        border-radius: 0;
+      }
+
+      /* Ẩn nút và các phần không cần in */
+      .btn,
+      .flex-center,
+      .nav-bar,
+      #step1,
+      #step2 {
+        display: none !important;
+      }
+
+      /* Hiện step3 khi in */
+      #step3 {
+        display: block !important;
+      }
+
+      .logo {
+        color: #1a3a6e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .result-card {
+        background: #f0f5fb !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border: 1px solid #c8daf0;
+      }
+
+      .result-stage-name {
+        color: #2d6bb4 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .action-card {
+        border: 1px solid #ccc;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .action-todo-list li::before {
+        color: #2d6bb4 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
@@ -535,11 +605,12 @@
         <div class="result-stage-meaning">Điều này có nghĩa là:</div>
         <div class="result-stage-desc" id="stageDesc"></div>
       </div>
-      <div class="result-actions-intro">Dựa trên câu trả lời, chúng tôi đề xuất <strong>3 hành động ưu tiên</strong> để doanh nghiệp có thể nâng cấp năng lực Social Commerce và tạo kết quả rõ hơn trong thời gian tới.</div>
+      <div class="result-actions-intro">Dựa trên câu trả lời, chúng tôi đề xuất <strong>3 hành động ưu tiên</strong> để
+        doanh nghiệp có thể nâng cấp năng lực Social Commerce và tạo kết quả rõ hơn trong thời gian tới.</div>
       <div class="result-actions-heading">3 hành động nên làm trong 7 ngày tới</div>
       <div id="actionsContainer"></div>
       <div class="flex-center">
-        <button class="btn" style="width: auto; padding: 12px 24px;" onclick="location.reload()">Làm lại</button>
+        <button class="btn" id="downloadPdfBtn" style="width: auto; padding: 12px 24px;">Lưu kết quả (PDF)</button>
       </div>
     </div>
   </div>
@@ -894,7 +965,7 @@
     }
 
     // ===================== UI & APP STATE =====================
-    let maDoanhNghiep = '';
+    let tenDoanhNghiep = '';
     let currentQuestionIndex = 0;
     let userScores = {}; // {1: score, 2: score, ...}
     let isTransitioning = false; // Prevent rapid clicks during animation
@@ -920,8 +991,8 @@
     });
 
     startBtn.addEventListener('click', () => {
-      maDoanhNghiep = maInput.value.trim();
-      if (!maDoanhNghiep) return;
+      tenDoanhNghiep = maInput.value.trim();
+      if (!tenDoanhNghiep) return;
       step1.classList.add('hidden');
       step2.classList.remove('hidden');
       renderQuestion('none');
@@ -1163,7 +1234,7 @@
 
       // Gửi dữ liệu về Google Sheets
       const payload = {
-        maDoanhNghiep: maDoanhNghiep,
+        tenDoanhNghiep: tenDoanhNghiep,
         q1: scores[1], q2: scores[2], q3: scores[3], q4: scores[4],
         q5: scores[5], q6: scores[6], q7: scores[7],
         q8: scores[8], q9: scores[9], q10: scores[10], q11: scores[11], q12: scores[12], q13: scores[13],
@@ -1186,6 +1257,11 @@
         console.log('Đã gửi dữ liệu về Sheets');
       }).catch(err => console.error('Lỗi gửi:', err));
     }
+
+    // ---- Download PDF ----
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+      window.print();
+    });
   </script>
 </body>
 

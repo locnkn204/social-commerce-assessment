@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Commerce Maturity Assessment</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #e8f0fa 0%, #c8daf0 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+      padding: 24px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a3a6e;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #333;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    .input-group input:focus {
+      border-color: #2d6bb4;
+      outline: none;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 16px;
+      background: #1a3a6e;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 12px;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .question-box {
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question-inner {
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .question-inner.slide-out-left {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+
+    .question-inner.slide-out-right {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+
+    .question-inner.slide-in-left {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+
+    .question-inner.slide-in-right {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .question-text.unanswered-highlight {
+      border-left: 3px solid #ff9800;
+      padding-left: 10px;
+      background: #fff8e1;
+      border-radius: 0 8px 8px 0;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      transition: all 0.3s;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-btn {
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      background: white;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-btn.selected {
+      border-color: #2d6bb4;
+      background: #e8f0fa;
+      font-weight: 500;
+    }
+
+    /* Progress section */
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+      flex: 1;
+      margin: 0 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #2d6bb4;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+
+    .progress-counter {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .progress-counter span {
+      color: #2d6bb4;
+      font-weight: 700;
+    }
+
+    /* Navigation bar */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-top: 8px;
+      padding-top: 12px;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 48px;
+      padding: 12px 22px;
+      border-radius: 13px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Ripple effect */
+    .nav-btn .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+      transform: scale(0);
+      animation: rippleAnim 0.45s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes rippleAnim {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Prev button - outline style */
+    .nav-btn-prev {
+      border: 2px solid #1a3a6e;
+      background: white;
+      color: #1a3a6e;
+      flex: 1;
+    }
+
+    .nav-btn-prev .ripple {
+      background: rgba(26, 58, 110, 0.15);
+    }
+
+    .nav-btn-prev:hover {
+      background: #e8f0fa;
+    }
+
+    .nav-btn-prev:active {
+      background: #c8daf0;
+    }
+
+    .nav-btn-prev .nav-icon {
+      font-size: 19px;
+    }
+
+    /* Next button - solid style */
+    .nav-btn-next {
+      border: 2px solid #1a3a6e;
+      background: #1a3a6e;
+      color: white;
+      flex: 1;
+    }
+
+    .nav-btn-next:hover {
+      background: #15305d;
+      border-color: #15305d;
+    }
+
+    .nav-btn-next:active {
+      background: #0f264c;
+      border-color: #0f264c;
+    }
+
+    .nav-btn-next .nav-icon {
+      font-size: 19px;
+    }
+
+    /* Finish variant of next button */
+    .nav-btn-next.finish-variant {
+      background: linear-gradient(135deg, #1a3a6e 0%, #15305d 50%, #0f264c 100%);
+      border-color: #1a3a6e;
+      box-shadow: 0 4px 14px rgba(26, 58, 110, 0.35);
+    }
+
+    .nav-btn-next.finish-variant:hover {
+      box-shadow: 0 6px 20px rgba(26, 58, 110, 0.5);
+    }
+
+    .nav-btn-next.finish-variant .nav-icon {
+      font-size: 18px;
+    }
+
+    .result-card {
+      background: #f0f5fb;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .result-stage-label {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .result-stage-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d6bb4;
+      margin-bottom: 14px;
+    }
+
+    .result-stage-meaning {
+      font-size: 14px;
+      color: #555;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .result-stage-desc {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .result-actions-intro {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .result-actions-heading {
+      font-size: 17px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 14px;
+    }
+
+    .action-card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .action-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .action-detail {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 4px;
+    }
+
+    .action-todo-label {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 6px;
+      margin-top: 4px;
+    }
+
+    .action-todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 8px 0;
+    }
+
+    .action-todo-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .action-todo-list li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: #2d6bb4;
+      font-size: 11px;
+      top: 2px;
+    }
+
+    .intro-greeting {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .intro-result-label {
+      font-size: 14px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .intro-benefit-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 18px 0;
+    }
+
+    .intro-benefit-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .intro-benefit-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #2d6bb4;
+      font-weight: 700;
+      font-size: 15px;
+      top: 0;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .input-label .required {
+      color: #c0392b;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .flex-center {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="app">
+    <!-- Màn hình nhập mã -->
+    <div id="step1">
+      <div class="logo">ĐÁNH GIÁ NĂNG LỰC SOCIAL COMMERCE</div>
+      <div class="intro-greeting">
+        Chào anh/chị,<br>
+        Đây là bài đánh giá nhanh giúp doanh nghiệp xác định mức độ sẵn sàng khi phát triển Social Commerce.<br><br>
+        Anh/chị vui lòng chọn đáp án mô tả đúng nhất tình trạng hiện tại của doanh nghiệp. Bài đánh giá mất khoảng
+        <strong>10 phút</strong>.
+      </div>
+      <div class="intro-result-label">Sau khi hoàn thành, anh/chị sẽ nhận được:</div>
+      <ul class="intro-benefit-list">
+        <li>Giai đoạn Social Commerce hiện tại của doanh nghiệp</li>
+        <li>3 hành động ưu tiên có thể triển khai ngay trong 7 ngày tới để giúp phát triển hơn</li>
+      </ul>
+      <label class="input-label" for="maInput">Tên doanh nghiệp của anh/chị <span class="required">*</span></label>
+      <div class="input-group">
+        <input type="text" id="maInput" placeholder="Nhập tên doanh nghiệp" autocomplete="off">
+      </div>
+      <button class="btn" id="startBtn" disabled>Bắt đầu đánh giá</button>
+    </div>
+
+    <!-- Màn hình câu hỏi -->
+    <div id="step2" class="hidden">
+      <div class="progress">
+        <span>Câu <span id="currentQ">1</span>/13</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-counter">Câu hỏi <span id="progressCurrentNum">1</span> / <span>13</span></div>
+      <div id="questionContainer" class="question-box"></div>
+      <div id="navBar" class="nav-bar">
+        <button class="nav-btn nav-btn-prev" id="prevBtn" style="display:none;">
+          <span class="nav-icon">←</span> Trước
+        </button>
+        <button class="nav-btn nav-btn-next" id="nextBtn">
+          Sau <span class="nav-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Màn hình kết quả -->
+    <div id="step3" class="hidden">
+      <div class="logo">KẾT QUẢ ĐÁNH GIÁ</div>
+      <div class="result-card">
+        <div class="result-stage-label">Doanh nghiệp của anh/chị hiện đang ở giai đoạn:</div>
+        <div class="result-stage-name" id="stageDisplay"></div>
+        <div class="result-stage-meaning">Điều này có nghĩa là:</div>
+        <div class="result-stage-desc" id="stageDesc"></div>
+      </div>
+      <div class="result-actions-intro">Dựa trên câu trả lời, chúng tôi đề xuất <strong>3 hành động ưu tiên</strong> để doanh nghiệp có thể nâng cấp năng lực Social Commerce và tạo kết quả rõ hơn trong thời gian tới.</div>
+      <div class="result-actions-heading">3 hành động nên làm trong 7 ngày tới</div>
+      <div id="actionsContainer"></div>
+      <div class="flex-center">
+        <button class="btn" style="width: auto; padding: 12px 24px;" onclick="location.reload()">Làm lại</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===================== DỮ LIỆU CÂU HỎI =====================
+    const questions = [
+      {
+        id: 1, group: 'activities',
+        title: '1. Shop livestream bán hàng ở mức nào?',
+        options: ['A. Gần như chưa livestream', 'B. Có live nhưng không cố định', 'C. Live khoảng 1 buổi/tuần', 'D. Live 2–3 buổi/tuần', 'E. Live đều, có kịch bản và ưu đãi', 'F. Live đều, có đo hiệu quả và tối ưu sau mỗi buổi']
+      },
+      {
+        id: 2, group: 'activities',
+        title: '2. Shop đăng video ngắn ở mức nào?',
+        options: ['A. Gần như chưa đăng video', 'B. Đăng không đều, chủ yếu dùng nội dung có sẵn', 'C. Dưới 3 video/tuần', 'D. 3–5 video/tuần', 'E. Gần như đăng hằng ngày', 'F. Có lịch nội dung và đo video nào ra đơn tốt']
+      },
+      {
+        id: 3, group: 'activities',
+        title: '3. Shop tối ưu tên sản phẩm, mô tả, hashtag như thế nào?',
+        options: ['A. Chưa chú ý đến từ khóa', 'B. Chủ yếu copy tên từ nhà cung cấp', 'C. Có thêm thương hiệu, dung tích, độ tuổi, công dụng', 'D. Đã tối ưu cho sản phẩm bán chạy', 'E. Rà soát từ khóa định kỳ', 'F. Có bộ từ khóa riêng theo nhóm sản phẩm và mùa vụ']
+      },
+      {
+        id: 4, group: 'activities',
+        title: '4. Shop đang làm affiliate hoặc KOC ở mức nào?',
+        options: ['A. Chưa làm affiliate/KOC', 'B. Có đăng ký nhưng chưa chủ động triển khai', 'C. Có vài affiliate/KOC nhưng chưa đều', 'D. Có danh sách affiliate/KOC và thỉnh thoảng gửi mẫu', 'E. Có nhóm affiliate/KOC hoạt động thường xuyên', 'F. Có quy trình tuyển, brief, theo dõi GMV và chăm sóc định kỳ']
+      },
+      {
+        id: 5, group: 'ads',
+        title: '5. Shop đang chạy Facebook Ads như thế nào?',
+        options: ['A. Chưa chạy Facebook Ads', 'B. Thỉnh thoảng boost bài', 'C. Có chạy cho bài bán hàng hoặc khuyến mãi', 'D. Có chia chiến dịch theo mục tiêu', 'E. Có test nội dung, tệp khách và theo dõi chi phí', 'F. Có ngân sách, retargeting, CPA/ROAS và tối ưu hằng tuần']
+      },
+      {
+        id: 6, group: 'ads',
+        title: '6. Shop quản lý quảng cáo từ khóa như thế nào?',
+        options: ['A. Chưa chạy quảng cáo từ khóa', 'B. Có bật nhưng để tự động', 'C. Có chọn từ khóa cho sản phẩm bán chạy', 'D. Có kiểm tra chi phí và đơn hằng tuần', 'E. Có loại từ khóa kém và tăng từ khóa hiệu quả', 'F. Có phân nhóm từ khóa, giá thầu và ngân sách theo lợi nhuận']
+      },
+      {
+        id: 7, group: 'ads',
+        title: '7. Shop dùng GMV Max hoặc ads tự động ở mức nào?',
+        options: ['A. Chưa biết hoặc chưa dùng', 'B. Đã nghe qua nhưng chưa thử', 'C. Có thử nhưng chưa theo dõi kỹ', 'D. Chạy cho sản phẩm/video đang bán tốt', 'E. Có theo dõi ngân sách, doanh thu, ROI và tồn kho', 'F. Chỉ scale khi sản phẩm đã hiệu quả và còn đủ biên lợi nhuận']
+      },
+      {
+        id: 8, group: 'conversion',
+        title: '8. Rating và review của sản phẩm chủ lực hiện tại như thế nào?',
+        options: ['A. Chưa có hoặc rất ít review', 'B. Có review nhưng chưa đủ tạo tin tưởng', 'C. Có khoảng 20–50 review', 'D. Có 50–100 review, rating khá ổn', 'E. Có trên 100 review, nhiều review ảnh/video', 'F. Có quy trình xin review và xử lý đánh giá xấu']
+      },
+      {
+        id: 9, group: 'conversion',
+        title: '9. Shop có bao nhiêu đơn Social Commerce mỗi tháng?',
+        options: ['A. Dưới 30 đơn/tháng', 'B. 30–100 đơn/tháng', 'C. 100–300 đơn/tháng', 'D. 300–500 đơn/tháng', 'E. 500–1.000 đơn/tháng', 'F. Trên 1.000 đơn/tháng']
+      },
+      {
+        id: 10, group: 'conversion',
+        title: '10. Trang sản phẩm của shop đã thuyết phục khách mua chưa?',
+        options: ['A. Còn sơ sài, thiếu thông tin', 'B. Có thông tin cơ bản nhưng chưa rõ lý do mua', 'C. Có đủ hình ảnh, giá, thông số, lợi ích', 'D. Bố cục rõ, hình tốt, lợi ích dễ hiểu', 'E. Có review, FAQ, cam kết, combo/upsell', 'F. Có tối ưu theo dữ liệu xem, thêm giỏ, mua hàng']
+      },
+      {
+        id: 11, group: 'conversion',
+        title: '11. Ưu đãi của shop có đủ hấp dẫn không?',
+        options: ['A. Ít khi có ưu đãi rõ ràng', 'B. Có ưu đãi nhưng chưa khác biệt', 'C. Có voucher, freeship hoặc combo cơ bản', 'D. Có ưu đãi riêng cho sản phẩm chủ lực', 'E. Có so sánh ưu đãi với đối thủ', 'F. Thiết kế ưu đãi theo lợi nhuận, kênh bán và mục tiêu tăng trưởng']
+      },
+      {
+        id: 12, group: 'conversion',
+        title: '12. Khách có dễ hiểu ưu đãi của shop không?',
+        options: ['A. Khách thường phải hỏi lại', 'B. Có ghi nhưng chưa nổi bật', 'C. Có ghi nhưng chưa đồng bộ giữa các kênh', 'D. Nhắc rõ trong video, live và trang sản phẩm', 'E. Thông điệp ưu đãi ngắn, dễ hiểu, lặp lại nhiều điểm chạm', 'F. Ưu đãi nhất quán ở thumbnail, caption, live, chat và trang sản phẩm']
+      },
+      {
+        id: 13, group: 'conversion',
+        title: '13. Shop chọn sản phẩm chủ lực online dựa trên gì?',
+        options: ['A. Sản phẩm đang có sẵn trong cửa hàng', 'B. Sản phẩm nhà cung cấp đang hỗ trợ/xả hàng', 'C. Sản phẩm bán chạy tại cửa hàng offline', 'D. Sản phẩm theo mùa và nhu cầu mẹ & bé', 'E. Dựa trên doanh số, review, tồn kho và biên lợi nhuận', 'F. Có danh sách sản phẩm chủ lực riêng theo từng kênh bán']
+      }
+    ];
+
+    // ===================== LOGIC TÍNH TOÁN =====================
+    const impactWeights = {
+      1: 1.25, 2: 1.25, 3: 1.00, 4: 1.10,
+      5: 0.90, 6: 1.00, 7: 1.00,
+      8: 1.25, 9: 0.90, 10: 1.35, 11: 1.25, 12: 1.20, 13: 1.35
+    };
+
+    function getUrgencyMultiplier(score) {
+      if (score <= 1) return 1.30;
+      if (score === 2) return 1.15;
+      if (score === 3) return 1.00;
+      return 0.50; // 4-5
+    }
+
+    function getReadinessMultiplier(qId, scores, conversionScore) {
+      const q10 = scores[10], q11 = scores[11], q13 = scores[13], q9 = scores[9];
+      switch (qId) {
+        case 5: case 6: // Ads chung
+          if (conversionScore < 40) return 0.50;
+          if (conversionScore < 70) return 0.85;
+          return 1.10;
+        case 7: // GMV Max
+          if (q10 < 3) return 0.60;
+          if (q11 < 3) return 0.70;
+          if (q13 < 3) return 0.70;
+          return 1.10;
+        case 4: // Affiliate/KOC
+          if (q13 < 3) return 0.70;
+          if (q11 < 3) return 0.80;
+          if (q10 >= 3 && q11 >= 3) return 1.10;
+          return 1.0;
+        case 1: case 2: // Livestream, Video
+          if (q13 < 2) return 0.85;
+          return 1.10;
+        case 8: // Review
+          if (q9 < 2) return 1.10;
+          return 1.00;
+        default: return 1.0;
+      }
+    }
+
+    function calculateAll(scores) {
+      // Điểm nhóm
+      const actAvg = (scores[1] + scores[2] + scores[3] + scores[4]) / 4;
+      const adsAvg = (scores[5] + scores[6] + scores[7]) / 3;
+      const convAvg = (scores[8] + scores[9] + scores[10] + scores[11] + scores[12] + scores[13]) / 6;
+
+      const activitiesScore = actAvg / 5 * 100;
+      const adsScore = adsAvg / 5 * 100;
+      const conversionScore = convAvg / 5 * 100;
+      const totalScore = activitiesScore * 0.35 + adsScore * 0.20 + conversionScore * 0.45;
+
+      // Sau khi tính conversionScore
+      const maxConversionActions = conversionScore < 30 ? 3 : 2;
+
+      let stage = '';
+      if (totalScore < 40) stage = 'Đang khởi động Social Commerce';
+      else if (totalScore < 70) stage = 'Đang tăng trưởng có định hướng';
+      else stage = 'Sẵn sàng scale đa kênh';
+
+      // Priority score
+      const metrics = [];
+      for (let i = 1; i <= 13; i++) {
+        const gap = 5 - scores[i];
+        const impact = impactWeights[i];
+        const urgency = getUrgencyMultiplier(scores[i]);
+        const readiness = getReadinessMultiplier(i, scores, conversionScore);
+        const priority = gap * impact * urgency * readiness;
+        metrics.push({ id: i, priority, group: i <= 4 ? 'activities' : (i <= 7 ? 'ads' : 'conversion') });
+      }
+
+      // Sắp xếp giảm dần
+      metrics.sort((a, b) => b.priority - a.priority);
+
+      // Áp dụng rule chọn top 3
+      let selected = [];
+      const groupCount = { activities: 0, ads: 0, conversion: 0 };
+
+      // Rule 5: Q13 < 3 luôn top
+      if (scores[13] < 3) {
+        const idx = metrics.findIndex(m => m.id === 13);
+        if (idx !== -1) {
+          selected.push(metrics[idx]);
+          groupCount[metrics[idx].group]++;
+          metrics.splice(idx, 1);
+        }
+      }
+
+      // Rule 6: Q10 < 3 luôn top
+      if (scores[10] < 3 && selected.length < 3) {
+        const idx = metrics.findIndex(m => m.id === 10);
+        if (idx !== -1 && !selected.some(s => s.id === 10)) {
+          selected.push(metrics[idx]);
+          groupCount[metrics[idx].group]++;
+          metrics.splice(idx, 1);
+        }
+      }
+
+      // Duyệt tiếp danh sách ưu tiên
+      for (const m of metrics) {
+        if (selected.length >= 3) break;
+        const maxForGroup = m.group === 'conversion' ? maxConversionActions : 2;
+        if (groupCount[m.group] >= maxForGroup) continue; // Rule 1: tối đa maxForGroup cùng nhóm
+        if (m.group === 'ads' && conversionScore < 50) continue; // Rule 4
+        selected.push(m);
+        groupCount[m.group]++;
+      }
+
+      // Rule 2: Nếu conversionScore < 40 mà chưa có 2 action conversion
+      if (conversionScore < 40) {
+        let convSelected = selected.filter(m => m.group === 'conversion').length;
+        if (convSelected < 2) {
+          // Lấy thêm action conversion có priority cao nhất chưa chọn
+          const convMetrics = metrics.filter(m => m.group === 'conversion' && !selected.some(s => s.id === m.id));
+          convMetrics.sort((a, b) => b.priority - a.priority);
+          while (convSelected < 2 && convMetrics.length > 0) {
+            const next = convMetrics.shift();
+            if (groupCount['conversion'] >= maxConversionActions) break;
+            // Loại bỏ action có id đã chọn (nếu có)
+            if (selected.some(s => s.id === next.id)) continue;
+            // Loại bỏ 1 action khác nếu đã đủ 3
+            if (selected.length >= 3) {
+              // Thay thế action có priority thấp nhất không phải conversion
+              let minIdx = -1, minP = Infinity;
+              selected.forEach((s, idx) => {
+                if (s.group !== 'conversion' && s.priority < minP) {
+                  minP = s.priority; minIdx = idx;
+                }
+              });
+              if (minIdx !== -1) {
+                groupCount[selected[minIdx].group]--;
+                selected.splice(minIdx, 1);
+              } else break;
+            }
+            selected.push(next);
+            groupCount['conversion']++;
+            convSelected++;
+          }
+        }
+      }
+
+      // Rule 3: Nếu activitiesScore < 40 và conversionScore >= 40, ít nhất 1 action activities
+      if (activitiesScore < 40 && conversionScore >= 40) {
+        if (!selected.some(m => m.group === 'activities')) {
+          const actMetrics = metrics.filter(m => m.group === 'activities' && !selected.some(s => s.id === m.id));
+          if (actMetrics.length > 0) {
+            // Thay thế action có priority thấp nhất không phải activities nếu đủ 3
+            if (selected.length >= 3) {
+              let minIdx = -1, minP = Infinity;
+              selected.forEach((s, idx) => {
+                if (s.group !== 'activities' && s.priority < minP) {
+                  minP = s.priority; minIdx = idx;
+                }
+              });
+              if (minIdx !== -1) {
+                groupCount[selected[minIdx].group]--;
+                selected.splice(minIdx, 1);
+              }
+            }
+            if (selected.length < 3) {
+              selected.push(actMetrics[0]);
+              groupCount['activities']++;
+            }
+          }
+        }
+      }
+
+      // Rule 9: Tạm tắt - không gộp Q1 và Q2
+      // if (selected.some(m => m.id === 1) && selected.some(m => m.id === 2) && scores[1] <= 2 && scores[2] <= 2) {
+      //   selected = selected.filter(m => m.id !== 2);
+      //   if (selected.length < 3) {
+      //     for (const m of metrics) {
+      //       if (selected.length >= 3) break;
+      //       if (!selected.some(s => s.id === m.id) && groupCount[m.group] < 2) {
+      //         selected.push(m);
+      //         groupCount[m.group]++;
+      //       }
+      //     }
+      //   }
+      // }
+
+      // Mapping action text
+      const actionMap = {
+        1: {
+          title: 'Xây lịch livestream cố định',
+          why: 'Livestream chưa đều nên khách khó hình thành thói quen theo dõi, shop cũng khó tạo đơn ổn định từ live.',
+          todo: 'Chọn 3–5 sản phẩm chủ lực để lên live\nĐặt lịch live cố định 2–3 buổi/tuần\nChuẩn bị kịch bản mở đầu, demo sản phẩm, chốt ưu đãi\nGhim sản phẩm và ưu đãi chính trong live\nGhi lại số người xem, số đơn và sản phẩm bán tốt sau mỗi buổi',
+          channel: 'TikTok → Shopee Live'
+        },
+        2: {
+          title: 'Tạo lịch video ngắn hằng tuần',
+          why: 'Video ngắn chưa đều nên shop thiếu traffic tự nhiên và khó kéo khách mới vào sản phẩm hoặc livestream.',
+          todo: 'Lên lịch đăng 3–5 video/tuần\nTập trung vào 3–5 sản phẩm chủ lực\nLàm video demo sản phẩm\nLàm video giải quyết vấn đề thường gặp của mẹ\nDùng video tốt để kéo khách vào live hoặc trang sản phẩm',
+          channel: 'TikTok → Facebook Reels → Instagram Reels'
+        },
+        3: {
+          title: 'Tối ưu tiêu đề, mô tả và hashtag sản phẩm',
+          why: 'Tên sản phẩm và mô tả chưa tối ưu khiến khách khó tìm thấy shop khi tìm kiếm.',
+          todo: 'Chọn 10 sản phẩm chủ lực để tối ưu trước\nViết lại tiêu đề có thương hiệu, công dụng, dung tích/độ tuổi\nBổ sung mô tả ngắn gọn, dễ hiểu\nThêm từ khóa mẹ thường dùng khi tìm sản phẩm\nCập nhật hashtag theo nhóm sản phẩm và mùa vụ',
+          channel: 'Shopee → TikTok Shop'
+        },
+        4: {
+          title: 'Kích hoạt nhóm Affiliate/KOC đầu tiên',
+          why: 'Shop chưa tận dụng được người bán bên ngoài để mở rộng độ phủ và tạo thêm đơn.',
+          todo: 'Chọn 5–10 sản phẩm dễ demo\nLập danh sách 10–20 affiliate/KOC nhỏ phù hợp ngành Mẹ & Bé\nChuẩn bị brief ngắn về lợi ích sản phẩm và ưu đãi\nGửi mẫu cho nhóm phù hợp\nTheo dõi video, lượt xem, đơn hàng và GMV từng người',
+          channel: 'TikTok Shop → Shopee'
+        },
+        5: {
+          title: 'Dùng Facebook Ads để kéo lại khách quan tâm',
+          why: 'Shop có thể đang bỏ lỡ nhóm khách đã từng xem, nhắn tin hoặc tương tác nhưng chưa mua.',
+          todo: 'Chọn 1–2 sản phẩm hoặc combo dễ mua\nTạo chiến dịch retarget khách đã tương tác\nTest 2–3 mẫu hình ảnh/video khác nhau\nTheo dõi chi phí trên mỗi tin nhắn hoặc đơn hàng\nDùng Zalo/Facebook để chăm sóc lại khách quan tâm',
+          channel: 'Facebook → Instagram'
+        },
+        6: {
+          title: 'Tối ưu quảng cáo từ khóa cho sản phẩm bán chạy',
+          why: 'Quảng cáo từ khóa chưa tối ưu có thể làm shop tốn ngân sách vào lượt click không ra đơn.',
+          todo: 'Chọn 5–10 sản phẩm đang có đơn tốt\nKiểm tra từ khóa nào đang tiêu tiền\nTăng ngân sách cho từ khóa ra đơn tốt\nGiảm hoặc tắt từ khóa tốn tiền nhưng ít đơn\nTheo dõi chi phí và đơn hàng hằng tuần',
+          channel: 'Shopee'
+        },
+        7: {
+          title: 'Test GMV Max cho sản phẩm đã có tín hiệu tốt',
+          why: 'GMV Max chỉ hiệu quả khi sản phẩm, video và offer đã có tín hiệu tốt. Chạy quá sớm dễ tốn ngân sách.',
+          todo: 'Chọn 1–3 sản phẩm đã có đơn\nƯu tiên sản phẩm có tồn kho đủ và biên lợi nhuận ổn\nChạy test với ngân sách nhỏ trước\nTheo dõi doanh thu, ROI và tồn kho mỗi ngày\nChỉ tăng ngân sách khi sản phẩm vẫn giữ được lợi nhuận',
+          channel: 'TikTok Shop'
+        },
+        8: {
+          title: 'Tăng review thật cho sản phẩm chủ lực',
+          why: 'Sản phẩm thiếu review làm khách chưa đủ tin tưởng để mua, đặc biệt trong ngành Mẹ & Bé.',
+          todo: 'Chọn 5 sản phẩm chủ lực còn thiếu review\nNhắn khách sau khi giao hàng để xin đánh giá thật\nKhuyến khích khách thêm hình ảnh/video nếu phù hợp\nPhản hồi nhanh các review chưa tốt\nDùng review tốt vào trang sản phẩm, video và livestream',
+          channel: 'Shopee → TikTok Shop'
+        },
+        9: {
+          title: 'Tạo gói sản phẩm dễ mua để tăng đơn nền',
+          why: 'Số đơn còn thấp nên shop cần sản phẩm dễ mua để tạo đơn nền, review và tín hiệu tốt cho thuật toán.',
+          todo: 'Tạo combo giá dễ mua cho khách mới\nTạo gói theo nhu cầu như đi sinh, ăn dặm, vệ sinh, chăm sóc da bé\nChọn sản phẩm có biên lợi nhuận đủ tốt\nViết thông điệp combo thật rõ\nĐẩy combo này trong video, live và trang sản phẩm',
+          channel: 'TikTok Shop → Shopee → Zalo'
+        },
+        10: {
+          title: 'Tối ưu trang sản phẩm chủ lực',
+          why: 'Product Page đang yếu, khách có thể xem sản phẩm nhưng chưa đủ tin tưởng để mua.',
+          todo: 'Chọn 5 sản phẩm chủ lực\nBổ sung hình ảnh rõ\nViết lại lợi ích chính\nThêm FAQ, review, cam kết\nTạo combo mua kèm',
+          channel: 'Shopee → TikTok Shop'
+        },
+        11: {
+          title: 'Thiết kế lại ưu đãi theo combo, voucher hoặc freeship',
+          why: 'Ưu đãi chưa đủ hấp dẫn khiến khách dễ chần chừ hoặc chuyển sang mua ở shop khác.',
+          todo: 'Chọn 3–5 sản phẩm chủ lực\nTạo combo giúp tăng giá trị đơn hàng\nTạo voucher cho khách mới hoặc khách quay lại\nThêm freeship theo ngưỡng đơn phù hợp\nKiểm tra biên lợi nhuận trước khi chạy ưu đãi',
+          channel: 'Shopee → TikTok Shop → Zalo'
+        },
+        12: {
+          title: 'Làm rõ ưu đãi ở mọi điểm chạm',
+          why: 'Ưu đãi chưa rõ khiến khách phải hỏi lại hoặc bỏ qua lý do mua ngay.',
+          todo: 'Viết lại ưu đãi thành 1 câu ngắn\nDùng cùng thông điệp ở video, live và trang sản phẩm\nGhim ưu đãi trong livestream\nThêm ưu đãi vào caption và thumbnail\nChuẩn bị câu trả lời nhanh cho inbox/chat',
+          channel: 'TikTok Shop → Shopee → Zalo'
+        },
+        13: {
+          title: 'Chọn lại danh sách sản phẩm chủ lực theo từng kênh',
+          why: 'Chọn sai sản phẩm chủ lực khiến shop tốn công làm nội dung, live và ads nhưng đơn không tăng như kỳ vọng.',
+          todo: 'Lập danh sách 10–20 sản phẩm có tiềm năng\nChấm theo nhu cầu thị trường, tồn kho, review và biên lợi nhuận\nChọn 3–5 sản phẩm hero cho TikTok\nChọn 5–10 sản phẩm chủ lực cho Shopee\nLoại bớt sản phẩm khó demo hoặc khó tạo ưu đãi',
+          channel: 'TikTok → Shopee'
+        }
+      };
+
+      // Tạm tắt - không tạo action gộp Q1+Q2
+      // let mergedAction = null;
+      // if (selected.some(m => m.id === 1) && !selected.some(m => m.id === 2) && scores[1] <= 2 && scores[2] <= 2) {
+      //   mergedAction = { id: 'merged', merged: true, title: 'Xây lịch nội dung TikTok gồm video ngắn + livestream cố định', why: 'Cần tăng traffic đều trước khi scale ads.', todo: 'Đăng 3-5 video/tuần và live 2 buổi/tuần.', channel: 'TikTok, Shopee Live' };
+      //   selected = selected.filter(m => m.id !== 1);
+      //   selected.push(mergedAction);
+      // }
+
+      const topActions = selected.slice(0, 3).map(m => {
+        const map = actionMap[m.id];
+        return { id: m.id, ...map };
+      });
+
+      return { activitiesScore, adsScore, conversionScore, totalScore, stage, topActions };
+    }
+
+    // ===================== UI & APP STATE =====================
+    let maDoanhNghiep = '';
+    let currentQuestionIndex = 0;
+    let userScores = {}; // {1: score, 2: score, ...}
+    let isTransitioning = false; // Prevent rapid clicks during animation
+    let unansweredSet = new Set(); // Track questions skipped without answering
+
+    // DOM elements
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const maInput = document.getElementById('maInput');
+    const startBtn = document.getElementById('startBtn');
+    const questionContainer = document.getElementById('questionContainer');
+    const currentQSpan = document.getElementById('currentQ');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressCurrentNum = document.getElementById('progressCurrentNum');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Enable start button khi nhập mã
+    maInput.addEventListener('input', () => {
+      startBtn.disabled = maInput.value.trim() === '';
+    });
+
+    startBtn.addEventListener('click', () => {
+      maDoanhNghiep = maInput.value.trim();
+      if (!maDoanhNghiep) return;
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+      renderQuestion('none');
+      updateNavButtons();
+    });
+
+    // ---- Ripple effect helper ----
+    function createRipple(event, btn) {
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (event.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (event.clientY - rect.top - size / 2) + 'px';
+      btn.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+    }
+
+    // ---- Slide transition helper ----
+    function slideTransition(direction, callback) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      const inner = questionContainer.querySelector('.question-inner');
+      if (!inner) {
+        callback();
+        isTransitioning = false;
+        return;
+      }
+
+      // Slide out
+      const outClass = direction === 'forward' ? 'slide-out-left' : 'slide-out-right';
+      inner.classList.add(outClass);
+
+      setTimeout(() => {
+        callback();
+
+        // After rendering new content, slide in
+        const newInner = questionContainer.querySelector('.question-inner');
+        if (newInner) {
+          const inClass = direction === 'forward' ? 'slide-in-right' : 'slide-in-left';
+          newInner.classList.add(inClass);
+          // Force reflow
+          newInner.offsetHeight;
+          newInner.classList.remove(inClass);
+        }
+        isTransitioning = false;
+      }, 300);
+    }
+
+    // ---- Render question (no animation wrapper) ----
+    function renderQuestionContent() {
+      const q = questions[currentQuestionIndex];
+      const isUnanswered = unansweredSet.has(q.id);
+      const highlightClass = isUnanswered ? ' unanswered-highlight' : '';
+
+      let html = `<div class="question-inner">`;
+      html += `<div class="question-text${highlightClass}">${q.title}</div><div class="options">`;
+      q.options.forEach((opt, idx) => {
+        const checked = userScores[q.id] === idx ? 'selected' : '';
+        html += `<button class="option-btn ${checked}" data-qid="${q.id}" data-score="${idx}">${opt}</button>`;
+      });
+      html += '</div></div>';
+      questionContainer.innerHTML = html;
+
+      // Attach option click listeners
+      document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const qid = parseInt(this.dataset.qid);
+          const score = parseInt(this.dataset.score);
+          userScores[qid] = score;
+          // Remove from unanswered set
+          unansweredSet.delete(qid);
+          // Visual selection
+          document.querySelectorAll(`.option-btn[data-qid="${qid}"]`).forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+          // Remove unanswered highlight
+          const questionText = questionContainer.querySelector('.question-text');
+          if (questionText) questionText.classList.remove('unanswered-highlight');
+          // Auto-advance after 400ms
+          setTimeout(() => {
+            if (currentQuestionIndex < questions.length - 1) {
+              navigateTo(currentQuestionIndex + 1, 'forward');
+            } else {
+              // At last question, just update buttons
+              updateProgress();
+              updateNavButtons();
+            }
+          }, 400);
+        });
+      });
+    }
+
+    // ---- Main render function ----
+    function renderQuestion(animDirection) {
+      if (currentQuestionIndex < 0) currentQuestionIndex = 0;
+      if (currentQuestionIndex >= questions.length) currentQuestionIndex = questions.length - 1;
+
+      if (animDirection === 'none' || !animDirection) {
+        renderQuestionContent();
+        updateProgress();
+        updateNavButtons();
+        return;
+      }
+
+      slideTransition(animDirection, () => {
+        renderQuestionContent();
+        updateProgress();
+        updateNavButtons();
+      });
+    }
+
+    // ---- Navigate to a specific index with animation ----
+    function navigateTo(targetIndex, direction) {
+      if (isTransitioning) return;
+      if (targetIndex < 0 || targetIndex >= questions.length) return;
+
+      // If going forward and current question not answered, mark as unanswered
+      if (direction === 'forward') {
+        const currentQ = questions[currentQuestionIndex];
+        if (userScores[currentQ.id] === undefined) {
+          unansweredSet.add(currentQ.id);
+        }
+      }
+
+      currentQuestionIndex = targetIndex;
+      renderQuestion(direction);
+    }
+
+    // ---- Update nav buttons state ----
+    function updateNavButtons() {
+      // Prev button: hide on first question
+      if (currentQuestionIndex === 0) {
+        prevBtn.style.display = 'none';
+      } else {
+        prevBtn.style.display = '';
+      }
+
+      // Next button: change to "Xem kết quả" on last question
+      if (currentQuestionIndex === questions.length - 1) {
+        nextBtn.innerHTML = 'Xem kết quả <span class="nav-icon">✓</span>';
+        nextBtn.classList.add('finish-variant');
+      } else {
+        nextBtn.innerHTML = 'Sau <span class="nav-icon">→</span>';
+        nextBtn.classList.remove('finish-variant');
+      }
+    }
+
+    // ---- Update progress bar ----
+    function updateProgress() {
+      const answered = Object.keys(userScores).length;
+      const total = questions.length;
+      const percent = Math.round(answered / total * 100);
+      progressFill.style.width = percent + '%';
+      progressPercent.textContent = percent + '%';
+      currentQSpan.textContent = currentQuestionIndex + 1;
+      progressCurrentNum.textContent = currentQuestionIndex + 1;
+    }
+
+    // ---- Prev button click ----
+    prevBtn.addEventListener('click', function (e) {
+      createRipple(e, this);
+      if (currentQuestionIndex > 0) {
+        navigateTo(currentQuestionIndex - 1, 'backward');
+      }
+    });
+
+    // ---- Next button click ----
+    nextBtn.addEventListener('click', function (e) {
+      createRipple(e, this);
+
+      // Last question → show results
+      if (currentQuestionIndex === questions.length - 1) {
+        // Mark current as unanswered if needed
+        const currentQ = questions[currentQuestionIndex];
+        if (userScores[currentQ.id] === undefined) {
+          unansweredSet.add(currentQ.id);
+        }
+
+        // Check all questions answered
+        if (Object.keys(userScores).length < 13) {
+          // Find first unanswered question
+          let firstUnanswered = -1;
+          for (let i = 0; i < questions.length; i++) {
+            if (userScores[questions[i].id] === undefined) {
+              if (firstUnanswered === -1) firstUnanswered = i;
+              unansweredSet.add(questions[i].id);
+            }
+          }
+          // Navigate to first unanswered
+          if (firstUnanswered !== -1) {
+            const dir = firstUnanswered < currentQuestionIndex ? 'backward' : 'forward';
+            navigateTo(firstUnanswered, dir);
+          }
+          return;
+        }
+
+        showResults();
+        return;
+      }
+
+      // Normal next
+      navigateTo(currentQuestionIndex + 1, 'forward');
+    });
+
+    // ---- Show results ----
+    function showResults() {
+      const scores = { ...userScores };
+      const result = calculateAll(scores);
+
+      // Mô tả giai đoạn
+      const stageDescriptions = {
+        'Đang khởi động Social Commerce': 'Shop đã có bán online nhưng hoạt động chưa đều.<br>Ưu tiên là xây nền tảng: sản phẩm chủ lực, nội dung đều, trang sản phẩm rõ, ưu đãi dễ hiểu.',
+        'Đang tăng trưởng có định hướng': 'Shop đã có một số hoạt động tốt nhưng chưa tối ưu đồng bộ.<br>Ưu tiên là chọn đúng điểm nghẽn để cải thiện đơn hàng và hiệu quả kênh.',
+        'Sẵn sàng scale đa kênh': 'Shop đã có nền tảng tốt.<br>Ưu tiên là scale bằng ads, affiliate/KOC, livestream đều và tối ưu theo dữ liệu.'
+      };
+
+      // Hiển thị step 3
+      step2.classList.add('hidden');
+      step3.classList.remove('hidden');
+      document.getElementById('stageDisplay').textContent = result.stage;
+      document.getElementById('stageDesc').innerHTML = stageDescriptions[result.stage] || '';
+
+      const actionsContainer = document.getElementById('actionsContainer');
+      actionsContainer.innerHTML = '';
+      result.topActions.forEach((action, idx) => {
+        const card = document.createElement('div');
+        card.className = 'action-card';
+        card.innerHTML = `
+      <div class="action-title">Action ${idx + 1}: ${action.title}</div>
+      <div class="action-detail"><strong>Vì sao:</strong> ${action.why}</div>
+      <div class="action-todo-label"><strong>Việc cần làm:</strong></div>
+      <ul class="action-todo-list">${action.todo.split('\n').map(item => `<li>${item}</li>`).join('')}</ul>
+      <div class="action-detail"><strong>Kênh ưu tiên:</strong> ${action.channel}</div>
+    `;
+        actionsContainer.appendChild(card);
+      });
+
+      // Gửi dữ liệu về Google Sheets
+      const payload = {
+        maDoanhNghiep: maDoanhNghiep,
+        q1: scores[1], q2: scores[2], q3: scores[3], q4: scores[4],
+        q5: scores[5], q6: scores[6], q7: scores[7],
+        q8: scores[8], q9: scores[9], q10: scores[10], q11: scores[11], q12: scores[12], q13: scores[13],
+        activitiesScore: result.activitiesScore,
+        adsScore: result.adsScore,
+        conversionScore: result.conversionScore,
+        totalScore: result.totalScore,
+        stage: result.stage,
+        action1: result.topActions[0]?.title || '',
+        action2: result.topActions[1]?.title || '',
+        action3: result.topActions[2]?.title || ''
+      };
+
+      fetch('https://script.google.com/macros/s/AKfycbxSabiFlIaqfaL1B9lLvxYA4QDEIWPa8eqskJHpCUXNQ6rXGYC0H6FXQrdcTBcNUqS3/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        console.log('Đã gửi dữ liệu về Sheets');
+      }).catch(err => console.error('Lỗi gửi:', err));
+    }
+  </script>
+</body>
+
+</html>

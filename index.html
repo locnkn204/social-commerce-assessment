@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Commerce Maturity Assessment</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -1259,8 +1261,71 @@
     }
 
     // ---- Download PDF ----
-    document.getElementById('downloadPdfBtn').addEventListener('click', () => {
-      window.print();
+    document.getElementById('downloadPdfBtn').addEventListener('click', async function () {
+      const btn = this;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '⏳ Đang tạo PDF...';
+      btn.disabled = true;
+
+      const container = document.querySelector('.container');
+
+      // Ẩn các nút thao tác
+      const actionButtons = document.querySelectorAll('#downloadPdfBtn, #sendEmailBtn');
+      actionButtons.forEach(el => el.style.display = 'none');
+
+      // Bung chiều cao thực tế
+      const originalStyle = {
+        maxHeight: container.style.maxHeight,
+        overflow: container.style.overflow
+      };
+      container.style.maxHeight = 'none';
+      container.style.overflow = 'visible';
+
+      try {
+        const canvas = await html2canvas(container, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          windowHeight: container.scrollHeight,
+          height: container.scrollHeight
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pdfWidth;
+        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Thêm ảnh vào PDF, nếu cao hơn 1 trang thì tự động thêm trang mới
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+
+        while (heightLeft > 0) {
+          position = position - pdfHeight; // đẩy lên để hiển thị phần tiếp theo
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pdfHeight;
+        }
+
+        pdf.save('KetQua_DanhGia_SocialCommerce.pdf');
+      } catch (error) {
+        console.error('Lỗi khi tạo PDF:', error);
+        alert('Có lỗi xảy ra khi tạo PDF. Vui lòng thử lại.');
+      } finally {
+        // Khôi phục style
+        container.style.maxHeight = originalStyle.maxHeight;
+        container.style.overflow = originalStyle.overflow;
+
+        actionButtons.forEach(el => el.style.display = '');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     });
   </script>
 </body>

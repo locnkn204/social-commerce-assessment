@@ -601,6 +601,8 @@
     <!-- Màn hình kết quả -->
     <div id="step3" class="hidden">
       <div class="logo">KẾT QUẢ ĐÁNH GIÁ</div>
+      <div id="businessNameDisplay"
+        style="text-align:center;font-size:16px;font-weight:600;color:#333;margin-bottom:16px;"></div>
       <div class="result-card">
         <div class="result-stage-label">Doanh nghiệp của anh/chị hiện đang ở giai đoạn:</div>
         <div class="result-stage-name" id="stageDisplay"></div>
@@ -1216,6 +1218,7 @@
       // Hiển thị step 3
       step2.classList.add('hidden');
       step3.classList.remove('hidden');
+      document.getElementById('businessNameDisplay').textContent = 'Doanh nghiệp: ' + tenDoanhNghiep + '';
       document.getElementById('stageDisplay').textContent = result.stage;
       document.getElementById('stageDesc').innerHTML = stageDescriptions[result.stage] || '';
 
